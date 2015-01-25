@@ -7,12 +7,8 @@ using System;
 public class CameraBehavior : MonoBehaviour {
 
     LookAtBehavior focused;
+    Transform cursor;
 
-    void Start()
-    {
-        Camera.SetupCurrent(this.camera);
-    }
-    
     void Update () {
 
         var fwd = this.transform.TransformDirection(Vector3.forward);
@@ -38,5 +34,27 @@ public class CameraBehavior : MonoBehaviour {
 
             focused = selected;
         }
+
+        var hitDistance = 1f;
+        fwd = this.transform.TransformDirection(Vector3.forward);
+        ray = new Ray(this.transform.position, fwd);
+        var hits = Physics
+            .RaycastAll(ray)
+            .OrderBy(h => h.distance);
+        if (hits.Any())
+        {
+            var hit = hits.First();
+            hitDistance = hit.distance - .5f;
+        }
+
+        cursor.transform.localPosition = new Vector3(
+            cursor.transform.localPosition.x,
+            cursor.transform.localPosition.y,
+            hitDistance);
+    }
+
+    void Start()
+    {
+        cursor = this.transform.FindChild("Cursor");
     }
 }

@@ -5,12 +5,19 @@ using System.Linq;
 public class Level1Controller : MonoBehaviour
 {
     bool quitting;
+    bool ended;
     bool levelStarted;
     Component selection;
     Camera[] cameras;
     Random rand = new Random();
     ObjectAlteration alteration;
     int score;
+
+    void Start()
+    {
+        Screen.showCursor = false;
+        Screen.lockCursor = true;
+    }
 
     // Update is called once per frame
     void Update()
@@ -106,8 +113,9 @@ public class Level1Controller : MonoBehaviour
         {
             Application.Quit();
         }
-        else
+        else if(!ended)
         {
+            ended = true;
             Debug.Log("loading next level...");
             var currentLevel = Application.loadedLevelName;
             var level = int.Parse(currentLevel.Split('_')[1]);

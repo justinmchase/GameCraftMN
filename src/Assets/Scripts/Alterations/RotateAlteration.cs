@@ -5,23 +5,23 @@ using System.Collections;
 public class RotateAlteration : ObjectAlteration {
 
     bool isSet;
-    public Quaternion RotationAlteration;
+    public Vector3 RotationAlteration;
     Quaternion originalRotation;
 
     // Use this for initialization
     public override void Set()
     {
         isSet = true;
-        originalRotation = this.transform.localRotation;
-        Debug.Log(this.name + ": rotate " + originalRotation);
+        originalRotation = this.transform.rotation;
+        Debug.Log(this.name + ": rotate " + originalRotation + "->" + RotationAlteration);
 
-        this.transform.localRotation *= RotationAlteration;
+        this.transform.Rotate(RotationAlteration);
     }
 
     // Update is called once per frame
     public override void Reset()
     {
         if (isSet)
-            this.transform.localRotation = originalRotation;
+            this.transform.rotation = originalRotation;
     }
 }

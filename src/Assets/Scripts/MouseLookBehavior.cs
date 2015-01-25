@@ -7,12 +7,9 @@ public class MouseLookBehavior : MonoBehaviour
 {
     public enum RotationAxes { MouseXAndY = 0, MouseX = 1, MouseY = 2 }
     public RotationAxes axes = RotationAxes.MouseXAndY;
-    public float sensitivityX = 15F;
-    public float sensitivityY = 15F;
-
-    public float minDistance = 0.75f;
-    public float maxDistance = 3.0f;
-
+    public float sensitivityX = 10F;
+    public float sensitivityY = 10F;
+    
     public float minimumX = -360F;
     public float maximumX = 360F;
 
@@ -20,7 +17,6 @@ public class MouseLookBehavior : MonoBehaviour
     public float maximumY = 60F;
     float rotationY = 0F;
 
-    private Transform Cursor;
 
     void Update()
     {
@@ -44,23 +40,6 @@ public class MouseLookBehavior : MonoBehaviour
 
             transform.localEulerAngles = new Vector3(-rotationY, transform.localEulerAngles.y, 0);
         }
-
-        var hitDistance = minDistance;
-        var fwd = this.transform.TransformDirection(Vector3.forward);
-        var ray = new Ray(this.transform.position, fwd);
-        var hits = Physics
-            .RaycastAll(ray)
-            .OrderBy(h => h.distance);
-        if (hits.Any())
-        {
-            var hit = hits.First();
-            hitDistance = Mathf.Clamp(hit.distance, minDistance, maxDistance) - 0.1f;
-        }
-
-        this.Cursor.transform.localPosition = new Vector3(
-            this.Cursor.transform.localPosition.x,
-            this.Cursor.transform.localPosition.y,
-            hitDistance);
     }
 
     void Start()
@@ -68,7 +47,5 @@ public class MouseLookBehavior : MonoBehaviour
         // Make the rigid body not change rotation
         if (rigidbody)
             rigidbody.freezeRotation = true;
-
-        this.Cursor = this.transform.FindChild("Cursor");
     }
 }
