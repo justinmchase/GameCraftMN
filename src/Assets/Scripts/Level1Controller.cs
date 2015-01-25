@@ -9,7 +9,7 @@ public class Level1Controller : MonoBehaviour
     Component selection;
     Camera[] cameras;
     Random rand = new Random();
-    ObjectSelectionBehavior altered;
+    ObjectAlteration alteration;
 
     // Update is called once per frame
     void Update()
@@ -41,27 +41,21 @@ public class Level1Controller : MonoBehaviour
         Debug.Log("Level begin.");
         levelStarted = true;
 
-        var selectableObjects = GameObject.FindObjectsOfType<ObjectSelectionBehavior>();
-        var i = Random.Range(0, selectableObjects.Length);
-
-
-        altered = selectableObjects[i];
-        Debug.Log("altering: " + altered.name);
-
-        var alteration = altered.GetComponent<ObjectAlteration>();
-        if (alteration == null)
+        var alterations = GameObject.FindObjectsOfType<ObjectAlteration>();
+        if (alterations.Any())
         {
-            altered.gameObject.AddComponent<ObjectAlteration>();
-        }
-        else
-        {
+            var i = Random.Range(0, alterations.Length);
+            alteration = alterations[i];
             alteration.Set();
+
+            //foreach (var a in alterations)
+            //    a.Set();
         }
     }
 
     void LevelEnd()
     {
-        if (selection != null && altered != null && selection.gameObject == altered.gameObject)
+        if (selection != null && alteration != null && selection.gameObject == alteration.gameObject)
         {
             Debug.Log("level success!");
             this.BroadcastMessage("BeginFadeOut");
@@ -73,7 +67,7 @@ public class Level1Controller : MonoBehaviour
 
         levelStarted = false;
         this.BroadcastMessage("ResetLevel");
-        altered = null;
+        alteration = null;
         selection = null;
     }
 

@@ -38,7 +38,7 @@ public class ObjectSelectionBehavior : MonoBehaviour
 
         if (focused && !selected)
         {
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0) || Input.GetKey(KeyCode.Space))
             {
                 this.SendMessageUpwards("ObjectedSelected", this);
             }
