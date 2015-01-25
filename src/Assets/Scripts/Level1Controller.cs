@@ -10,6 +10,7 @@ public class Level1Controller : MonoBehaviour
     Camera[] cameras;
     Random rand = new Random();
     ObjectAlteration alteration;
+    int score;
 
     // Update is called once per frame
     void Update()
@@ -55,14 +56,42 @@ public class Level1Controller : MonoBehaviour
 
     void LevelEnd()
     {
-        if (selection != null && alteration != null && selection.gameObject == alteration.gameObject)
+        if (selection != null && alteration)
         {
-            Debug.Log("level success!");
-            this.BroadcastMessage("BeginFadeOut");
+            //!= null && selection.gameObject == alteration.gameObject
+            var go = alteration.gameObject;
+            while (go != null)
+            {
+                if (selection.gameObject == go)
+                {
+                    score++;
+                    this.BroadcastMessage("PointScored", score);
+                    if (score == 3)
+                    {
+                        Debug.Log("level success!");
+                        this.BroadcastMessage("BeginFadeOut");
+                    }
+                    break;
+                }
+                else
+                {
+                    if (go.transform.parent != null)
+                        go = go.transform.parent.gameObject;
+                    else
+                        go = null;
+                }
+            }
+
+            if(go == null)
+            {
+                score = 0;
+                this.BroadcastMessage("PointScored", score);
+                Debug.Log("Wrong selection.");
+            }
         }
         else
         {
-            Debug.Log("level failed!");
+            Debug.Log("No selection.");
         }
 
         levelStarted = false;
