@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ObjectSelectionBehavior : MonoBehaviour {
+public class ObjectSelectionBehavior : MonoBehaviour
+{
 
     public bool IsOn;
     public string Message;
@@ -57,8 +58,9 @@ public class ObjectSelectionBehavior : MonoBehaviour {
 
     public void Deselect()
     {
+        if (selected)
+            Debug.Log("Deselected.");
         selected = false;
-        Debug.Log("Deselected.");
     }
 
     public void Focus()

@@ -15,5 +15,6 @@
 *.pidb
 *.booproj
 *.db
+*.db.meta
 
 sysinfo.txt

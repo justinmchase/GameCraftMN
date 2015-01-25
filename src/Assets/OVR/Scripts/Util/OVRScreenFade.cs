@@ -43,7 +43,8 @@ public class OVRScreenFade : MonoBehaviour
 	public Shader fadeShader = null;
 
 	private Material fadeMaterial = null;
-	private bool isFading = false;
+	private bool isFadingIn = false;
+    private bool isFadingOut = false;
 
 	/// <summary>
 	/// Initialize.
@@ -70,6 +71,11 @@ public class OVRScreenFade : MonoBehaviour
 		StartCoroutine(FadeIn());
 	}
 
+    void BeginFadeOut()
+    {
+        StartCoroutine(FadeOut());
+    }
+
 	/// <summary>
 	/// Cleans up the fade material
 	/// </summary>
@@ -88,7 +94,7 @@ public class OVRScreenFade : MonoBehaviour
 	{
 		float elapsedTime = 0.0f;
 		Color color = fadeMaterial.color = fadeColor;
-		isFading = true;
+		isFadingIn = true;
 		while (elapsedTime < fadeTime)
 		{
 			yield return new WaitForEndOfFrame();
@@ -96,15 +102,31 @@ public class OVRScreenFade : MonoBehaviour
 			color.a = 1.0f - Mathf.Clamp01(elapsedTime / fadeTime);
 			fadeMaterial.color = color;
 		}
-		isFading = false;
+		isFadingIn = false;
 	}
+
+    IEnumerator FadeOut()
+    {
+        float elapsedTime = 0.0f;
+        Color color = fadeMaterial.color = fadeColor;
+        isFadingOut = true;
+        while (elapsedTime < fadeTime)
+        {
+            elapsedTime += Time.deltaTime;
+            color.a = Mathf.Clamp01(elapsedTime / fadeTime);
+            fadeMaterial.color = color;
+            yield return new WaitForEndOfFrame();
+        }
+        isFadingOut = false;
+        this.SendMessageUpwards("FadeOutComplete");
+    }
 
 	/// <summary>
 	/// Renders the fade overlay when attached to a camera object
 	/// </summary>
 	void OnPostRender()
 	{
-		if (isFading)
+		if (isFadingIn || isFadingOut)
 		{
 			fadeMaterial.SetPass(0);
 			GL.PushMatrix();
